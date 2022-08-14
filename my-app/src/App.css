@@ -1,5 +1,8 @@
 .App {
+  padding-top: 30px;
   text-align: center;
+  width: 1200px;
+  margin: 0 auto;
 }
 
 .App-logo {
@@ -35,4 +38,20 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.flex{
+  display: flex;
+  justify-content: center;
+}
+.div{
+  width: 300px;
+}
+.div2{
+  /* margin-top: 15px; */
+  width: 300px;
+}
+.h3{
+  /* text-align: left;
+  margin-left: 30px; */
 }
