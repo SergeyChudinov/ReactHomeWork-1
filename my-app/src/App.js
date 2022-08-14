@@ -19,19 +19,29 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
+const theme = createTheme({
+  palette: {
+      primary: {
+          main: red[700],
+          light: red[100],
+      },
+  },
+});
+
 function AlignItemsList(props) {
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      {props.messageList.map(el => {
-        const four = (props.messageList.length === el.id) ? true : false;
+      <h3 className='h3'>Char list</h3>
+      {props.charList.map((el, i) => {
+        const four = (props.charList.length === i) ? true : false;
         return (
-          <div key={el.id} className='div'>
+          <div key={i}>
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
               </ListItemAvatar>
               <ListItemText
-                primary={`id ${el.id}`}
+                
                 secondary={
                   <React.Fragment>
                     <Typography
@@ -42,7 +52,7 @@ function AlignItemsList(props) {
                     >
                       {el.author}
                     </Typography>
-                    {` —  ${el.text}`}
+                    {`${el}`}
                   </React.Fragment>
                 }
               />
@@ -56,18 +66,14 @@ function AlignItemsList(props) {
 }
 
 function App() {
-  let [messageList, setState] = useState([
-    // {
-    //   id: 1,
-    //   text: 'Просто текст',
-    //   author: 'Sergey'
-    // },
-    // {
-    //   id: 2,
-    //   text: 'Просто текст2',
-    //   author: 'Ivan'
-    // }
-  ])
+  let [messageList, setState] = useState([]);
+  let [charList, setCharList] = useState([
+    'Some char',
+    'Complicated duscussion',
+    'Description and documentation'
+  ]);
+  const [author, setAuthor] = useState([]);
+  const [message, setMessage] = useState([]);
   const text = useRef(null);
   const name = useRef(null);
   let isChanged = useRef(false);
@@ -89,8 +95,8 @@ function App() {
       
       messageList = [...messageList, {
         id: messageList.length + 1,
-        text: text.current.value,
-        author: name.current.value
+        text: message,
+        author: author
       }]
       isChanged.current = true;
     }
@@ -100,43 +106,50 @@ function App() {
     name.current.focus();
     if (isChanged.current) {
       isChanged.current = false;
+      console.log(messageList)
       messageList = [...messageList, {
         id: messageList.length + 1,
         text: `Hello ${name.current.value}!`,
         author: 'I am a robot'
       }]
-      setTimeout(() => setState(messageList), 1500)
+      const timeout = setTimeout(() => setState(messageList), 1500)
+      return () => clearInterval(timeout)
     }
-  })
+  }, [messageList])
   //theme={theme}
   return (
-    <div className="App">
-      <Message text={'Просто текст!!!'}/>
-      <Box component='form'>
-        <TextField id="name" label="Имя" variant="outlined"
-        sx={{ mb: 2}} name='author' inputRef={name}/><br></br>
-        <TextField id="message" label="Сообщение" variant="outlined"
-        sx={{ mb: 2}} name='author' inputRef={text} /><br></br>
-        <Button variant="outlined" color='primary' size='small' type='submit' sx={{ mb: 2}} onClick={handleFocus}>Отправить</Button>
-      </Box>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+ 
 
-      <div className='flex'>
-        <div className='div'>
-          <AlignItemsList messageList={messageList}/>
-        </div>
-        <div className='div'>
+        <div className='flex'>
+          <div className='div'>
+            <AlignItemsList charList={charList}/>
+          </div>
+          <div className='div2'>
+            {/* <Message text={'Просто текст!!!'}/> */}
+            <h3 className='h3'>Messages</h3>
+            <Box component='form'>
+              <TextField onInput={e => setAuthor(e.target.value)} id="name" label="Имя" variant="outlined"
+              sx={{ mb: 2}} name='author' inputRef={name}/><br></br>
+              <TextField onInput={e => setMessage(e.target.value)} id="message" label="Сообщение" variant="outlined"
+              sx={{ mb: 2}} name='author' inputRef={text} /><br></br>
+              <Button variant="outlined" color='primary' size='small' type='submit' sx={{ mb: 2}} onClick={handleFocus}>Отправить</Button>
+            </Box>
             {messageList.map(el => {
               return (
-                <div key={el.id}>
-                  {el.text} - {el.author}
-                </div>
+                <Message key={el.id} author={el.author} text={el.text}/>
               )
             })}
-        </div>
+          </div>
+        </div>  
       </div>
-      
-    </div>
+    </ThemeProvider>
   );
 }
 
 export default App;
+
+{/* <div key={el.id}>
+  {el.text} - {el.author}
+</div> */}
